@@ -1,6 +1,10 @@
-# Loop through each day, updating the hg repo, and create a
-# list of files matching .xul on the entire tree for that day
+#!/bin/bash
+# these switches turn some bugs into errors
+set -o errexit -o pipefail -o noclobber -o nounset
 
+
+# Loop through each day, updating the hg repo, and save a
+# count of lines with nsIDocShellTreeItem each day
 
 d=2019-06-01
 end=$(date +"%Y-%m-%d")
