@@ -11,26 +11,53 @@
   <h1>Tracking the number of instances of nsIDocShellTreeItem in m-c over time.</h1>
   <div id="el"></div>
   <script>
-  d3.json('./file-counts.json', function(data) {
-    let instanceData = [];
-    let chartData = [instanceData];
-    for (let i in data) {
-      let dateStr = i;
-      instanceData.push({
+  d3.json('./skipped-failing-tests/sample.json', function(data) {
+
+    let skipped = [];
+    let failing = [];
+    let chartData = [failing, skipped];
+    for (let date of ["2019-08-24", "2019-08-25", "2019-08-26", "2019-08-27"]) {
+      let dateStr = date;
+      failing.push({
         date: new Date(dateStr),
-        value: data[i]
+        value: data.summary["failed tests"] * Math.random()
+      });
+      skipped.push({
+        date: new Date(dateStr),
+        value: data.summary["skipped tests"] * Math.random()
       });
     }
+    console.log(chartData);
     MG.data_graphic({
         data: chartData,
         width: 800,
         height: 400,
         right: 40,
         target: '#el',
-        legend: ['Callers'],
+        legend: ['Failing Tests', 'Skipped Tests'],
         legend_target: '.legend'
     });
 });
+//   d3.json('./file-counts.json', function(data) {
+//     let instanceData = [];
+//     let chartData = [instanceData];
+//     for (let i in data) {
+//       let dateStr = i;
+//       instanceData.push({
+//         date: new Date(dateStr),
+//         value: data[i]
+//       });
+//     }
+//     MG.data_graphic({
+//         data: chartData,
+//         width: 800,
+//         height: 400,
+//         right: 40,
+//         target: '#el',
+//         legend: ['Callers'],
+//         legend_target: '.legend'
+//     });
+// });
 </script>
 </body>
 </html>
