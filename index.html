@@ -3,22 +3,37 @@
 <head>
     <meta charset="utf-8">
     <title>Count nsIDocShellTreeItem</title>
+    <link href='./static/styles.css' rel='stylesheet' type='text/css'>
     <link href='./static/metricsgraphics.css' rel='stylesheet' type='text/css'>
     <script src="./static/d3.v4.min.js"></script>
     <script src='./static/metricsgraphics.min.js'></script>
     <style>
-      #skipped-and-failing-tests { min-width: 800px; }
+      #grid {
+        margin-top: 10px;
+        min-width: 800px;
+        padding: 10px;
+        display: grid;
+        grid-template-columns: repeat( 2, minmax(250px, 1fr) );
+      }
       #skipped-and-failing-tests .mg-active-datapoint-container {
-        transform: translateX(230px);
+        transform: translate(-60px, -20px);
       }
     </style>
 </head>
 <body>
-
+  <h1>Are We Fission Yet?</h1>
+  <description>
+    Fission is important because X, Y, and Z. This page helps to track progress towards
+    Firefox accomplishing this goal.
+  </description>
   <!-- <h2>Tracking the number of instances of nsIDocShellTreeItem in m-c over time.</h2> -->
   <!-- <div id="el"></div> -->
 
-  <div id="skipped-and-failing-tests"></div>
+  <div id="grid">
+      <div id="skipped-and-failing-tests"></div>
+      <div id="tests-per-component">hi</div>
+      <div id="tests-per-component2">there</div>
+  </div>
   <script>
 
     var markers = [{
@@ -52,15 +67,14 @@
         });
       }
 
-      console.log(chartData);
       MG.data_graphic({
           title: "Skipped and Failing Tests with Fission",
           data: chartData,
           markers: markers,
           full_width: true,
-          center_title_full_width: true,
+          // center_title_full_width: true,
           height: 300,
-          right: 500,
+          right: 100,
           interpolate: d3.curveLinear,
           target: '#skipped-and-failing-tests',
           legend: ['Failing Tests', 'Skipped Tests'],
