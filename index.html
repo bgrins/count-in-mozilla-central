@@ -6,38 +6,97 @@
     <link href='./static/metricsgraphics.css' rel='stylesheet' type='text/css'>
     <script src="./static/d3.v4.min.js"></script>
     <script src='./static/metricsgraphics.min.js'></script>
+    <style>
+      #skipped-and-failing-tests { min-width: 800px; }
+      #skipped-and-failing-tests .mg-active-datapoint-container {
+        transform: translateX(230px);
+      }
+    </style>
 </head>
 <body>
-  <h1>Tracking the number of instances of nsIDocShellTreeItem in m-c over time.</h1>
-  <div id="el"></div>
-  <script>
-  d3.json('./skipped-failing-tests/sample.json', function(data) {
 
-    let skipped = [];
-    let failing = [];
-    let chartData = [failing, skipped];
-    for (let date of ["2019-08-24", "2019-08-25", "2019-08-26", "2019-08-27"]) {
-      let dateStr = date;
-      failing.push({
-        date: new Date(dateStr),
-        value: data.summary["failed tests"] * Math.random()
+  <!-- <h2>Tracking the number of instances of nsIDocShellTreeItem in m-c over time.</h2> -->
+  <!-- <div id="el"></div> -->
+
+  <div id="skipped-and-failing-tests"></div>
+  <script>
+
+    var markers = [{
+        'date': new Date('2019-08-07'),
+        'label': '1st Milestone'
+    }, {
+        'date': new Date('2019-08-24'),
+        'label': '2nd Milestone'
+    }];
+
+    async function fetchSampleData() {
+      let r = await fetch('./skipped-failing-tests/sample-data-from-sheet.csv')
+      let text = await r.text();
+      let data = text.split("\n");
+      data.shift(); // remove header
+      let skippedValues = [];
+      let failingValues = [];
+      let chartData = [skippedValues, failingValues];
+      for (let row of data) {
+        let vals = row.split(",");
+        let date = vals[1];
+        let skipped = vals[2];
+        let failed = vals[4];
+        skippedValues.push({
+          date: new Date(date),
+          value: parseInt(skipped),
+        });
+        failingValues.push({
+          date: new Date(date),
+          value: parseInt(failed),
+        });
+      }
+
+      console.log(chartData);
+      MG.data_graphic({
+          title: "Skipped and Failing Tests with Fission",
+          data: chartData,
+          markers: markers,
+          full_width: true,
+          center_title_full_width: true,
+          height: 300,
+          right: 500,
+          interpolate: d3.curveLinear,
+          target: '#skipped-and-failing-tests',
+          legend: ['Failing Tests', 'Skipped Tests'],
       });
-      skipped.push({
-        date: new Date(dateStr),
-        value: data.summary["skipped tests"] * Math.random()
-      });
+
     }
-    console.log(chartData);
-    MG.data_graphic({
-        data: chartData,
-        width: 800,
-        height: 400,
-        right: 40,
-        target: '#el',
-        legend: ['Failing Tests', 'Skipped Tests'],
-        legend_target: '.legend'
-    });
-});
+
+    fetchSampleData();
+
+//   d3.json('./skipped-failing-tests/sample.json', function(data) {
+
+//     let skipped = [];
+//     let failing = [];
+//     let chartData = [failing, skipped];
+//     for (let date of ["2019-08-24", "2019-08-25", "2019-08-26", "2019-08-27"]) {
+//       let dateStr = date;
+//       failing.push({
+//         date: new Date(dateStr),
+//         value: data.summary["failed tests"] * Math.random()
+//       });
+//       skipped.push({
+//         date: new Date(dateStr),
+//         value: data.summary["skipped tests"] * Math.random()
+//       });
+//     }
+//     console.log(chartData);
+//     MG.data_graphic({
+//         data: chartData,
+//         width: 800,
+//         height: 400,
+//         right: 40,
+//         target: '#el',
+//         legend: ['Failing Tests', 'Skipped Tests'],
+//         legend_target: '.legend'
+//     });
+// });
 //   d3.json('./file-counts.json', function(data) {
 //     let instanceData = [];
 //     let chartData = [instanceData];
